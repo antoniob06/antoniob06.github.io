@@ -3,22 +3,21 @@
 
 <head>
     <style>
-
-        
         body {
-    background-image: url("https://static3.depositphotos.com/1003791/163/i/450/depositphotos_1633171-stock-photo-blue-sky-seamless-pattern.jpg");
-    background-size: cover;
-    animation: scrollBackground 10s linear infinite;
-}
+            background-image: url("https://static3.depositphotos.com/1003791/163/i/450/depositphotos_1633171-stock-photo-blue-sky-seamless-pattern.jpg");
+            background-size: cover;
+            animation: scrollBackground 10s linear infinite;
+        }
 
-@keyframes scrollBackground {
-    0% {
-        background-position: 0 100%;
-    }
-    100% {
-        background-position: 0 0;
-    }
-}
+        @keyframes scrollBackground {
+            0% {
+                background-position: 0 100%;
+            }
+
+            100% {
+                background-position: 0 0;
+            }
+        }
 
         #target {
             width: 200px;
@@ -32,7 +31,7 @@
             position: absolute;
             bottom: unset;
 
-        
+
 
         }
 
@@ -116,9 +115,10 @@
 
         #leftbtn,
         #rightbtn,
-        #firebtn, #superbtn {
+        #firebtn,
+        #superbtn {
             height: 150px;
-            width:150px;
+            width: 150px;
             background-size: cover;
         }
 
@@ -143,16 +143,17 @@
         #firebtn {
             position: absolute;
             top: 0;
-    
-            right:0;
+
+            right: 0;
             background-image: url("https://cdn-icons-png.flaticon.com/512/1140/1140590.png");
         }
 
-        #superbtn{
+        #superbtn {
             position: absolute;
             top: 0;
-            left:0;
+            left: 0;
             background-image: url("https://www.shareicon.net/data/2016/11/16/854233_lightning_512x512.png");
+            visibility: hidden;
         }
     </style>
 </head>
@@ -203,7 +204,7 @@
         let vita = 7
         let TBottom = window.innerHeight - boxT.getBoundingClientRect().bottom
         let barrieraWidth = window.innerWidth / 4
-        let barrieraBottom = TBottom -30
+        let barrieraBottom = TBottom - 30
         let barrieraLeft = window.innerWidth / 2 - barrieraWidth / 2
         let boxTInterval = window.setInterval(sposta, 100)
         let proiettili = 5
@@ -224,20 +225,20 @@
 
         /**********************/
 
-let body = document.body;
-let scrollSpeed = 1; // Velocità di scorrimento
+        let body = document.body;
+        let scrollSpeed = 1; // Velocità di scorrimento
 
-function scrollBackground() {
-    let currentPosition = parseInt(window.getComputedStyle(body).backgroundPositionY);
-    body.style.backgroundPositionY = (currentPosition + scrollSpeed) + "px";
-}
+        function scrollBackground() {
+            let currentPosition = parseInt(window.getComputedStyle(body).backgroundPositionY);
+            body.style.backgroundPositionY = (currentPosition + scrollSpeed) + "px";
+        }
 
-setInterval(scrollBackground, 50); // Esegui la funzione ogni 50ms
-
-
+        setInterval(scrollBackground, 50); // Esegui la funzione ogni 50ms
 
 
-/*******************************/
+
+
+        /*******************************/
 
 
         if (!confirm("Vuoi usare i comandi a schermo?")) {
@@ -501,21 +502,21 @@ setInterval(scrollBackground, 50); // Esegui la funzione ogni 50ms
                     }
 
 
-
-
                     proiettile.style.bottom = posBottom + "px"
                     reload.textContent = proiettili + ""
 
-                    if (proiettili <= 1) reload.style.backgroundColor = "red"
-                    else if (proiettili >= 15) reload.style.backgroundColor = "blue"
-                    else reload.style.backgroundColor = "green"
-
-
-
-
-
-
-
+                    if (proiettili <= 1) {
+                        reload.style.backgroundColor = "red"
+                        superbtn.style.visibility = "hidden"
+                    }
+                    else if (proiettili >= 15) {
+                        reload.style.backgroundColor = "blue"
+                        superbtn.style.visibility = "visible"
+                    }
+                    else {
+                        reload.style.backgroundColor = "green"
+                        superbtn.style.visibility = "hidden"
+                    }
 
                 }, 10)
 
