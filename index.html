@@ -6,9 +6,19 @@
 
         
         body {
-            background-image: url("https://static3.depositphotos.com/1003791/163/i/450/depositphotos_1633171-stock-photo-blue-sky-seamless-pattern.jpg");
-            background-size: cover;
-        }
+    background-image: url("https://static3.depositphotos.com/1003791/163/i/450/depositphotos_1633171-stock-photo-blue-sky-seamless-pattern.jpg");
+    background-size: cover;
+    animation: scrollBackground 10s linear infinite;
+}
+
+@keyframes scrollBackground {
+    0% {
+        background-position: 0 100%;
+    }
+    100% {
+        background-position: 0 0;
+    }
+}
 
         #target {
             width: 200px;
@@ -213,6 +223,21 @@
         boxT.style.left = posLeftT + "px"
 
         /**********************/
+
+let body = document.body;
+let scrollSpeed = 1; // Velocità di scorrimento
+
+function scrollBackground() {
+    let currentPosition = parseInt(window.getComputedStyle(body).backgroundPositionY);
+    body.style.backgroundPositionY = (currentPosition + scrollSpeed) + "px";
+}
+
+setInterval(scrollBackground, 50); // Esegui la funzione ogni 50ms
+
+
+
+
+/*******************************/
 
 
         if (!confirm("Vuoi usare i comandi a schermo?")) {
