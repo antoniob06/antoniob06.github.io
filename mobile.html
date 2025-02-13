@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+
+        
+        body {
+            background-image: url("https://static3.depositphotos.com/1003791/163/i/450/depositphotos_1633171-stock-photo-blue-sky-seamless-pattern.jpg");
+            background-size: cover;
+        }
+
+        #target {
+            width: 200px;
+            height: 200px;
+            margin: 0;
+            background-image: url("https://i.imgflip.com/7b1loe.png");
+
+            background-size: cover;
+            background-position-y: -30px;
+            background-repeat: no-repeat;
+            position: absolute;
+            bottom: unset;
+
+        
+
+        }
+
+        #gun {
+            width: 300px;
+            height: 200px;
+            margin: 0;
+            background-image: url("https://openclipart.org/image/2000px/324536");
+            background-size: cover;
+            background-repeat: no-repeat;
+
+
+            position: absolute;
+            bottom: 8px;
+            left: 16px;
+
+        }
+
+        #reload {
+            width: 100px;
+            height: 20px;
+            background-color: green;
+            position: absolute;
+            top: 0;
+            left: auto;
+            color: white;
+            text-align: center;
+
+            border-bottom-right-radius: 15px;
+            border-bottom-left-radius: 15px;
+
+        }
+
+        div.proj {
+            width: 15px;
+            height: 25px;
+            border-top-right-radius: 10px;
+            border-top-left-radius: 10px;
+            background-color: gray;
+            position: absolute;
+
+        }
+
+        #vitatot {
+            background-color: red;
+            color: white;
+            border-radius: 10px;
+            text-align: center;
+            width: 84px;
+            /*12x7*/
+            position: sticky;
+            margin-top: 75px;
+            margin-left: 50px;
+
+        }
+
+        #vita {
+            background-color: green;
+            color: white;
+            border-radius: 10px;
+            width: inherit;
+        }
+
+        #barrier {
+            background-color: brown;
+            border-radius: 15px;
+            width: 25vw;
+            height: 20px;
+            position: absolute;
+
+        }
+
+        #comandi {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100vw;
+            height: 300px;
+
+        }
+
+        #leftbtn,
+        #rightbtn,
+        #firebtn, #superbtn {
+            height: 150px;
+            width:150px;
+            background-size: cover;
+        }
+
+        #leftbtn {
+
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background-image: url("https://pngmaterial.com/dvsxyz02/uploads/blue-arrow-png.png");
+
+            transform: scale(-1);
+        }
+
+        #rightbtn {
+
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-image: url("https://pngmaterial.com/dvsxyz02/uploads/blue-arrow-png.png");
+        }
+
+        #firebtn {
+            position: absolute;
+            top: 0;
+    
+            right:0;
+            background-image: url("https://cdn-icons-png.flaticon.com/512/1140/1140590.png");
+        }
+
+        #superbtn{
+            position: absolute;
+            top: 0;
+            left:0;
+            background-image: url("https://www.shareicon.net/data/2016/11/16/854233_lightning_512x512.png");
+        }
+    </style>
+</head>
+
+<body>
+    <div id="reload">5</div>
+    <div id="target">
+        <div id="vitatot">
+            <div id="vita">7</div>
+        </div>
+    </div>
+    <div id="gun"></div>
+
+    <div id="barrier"></div>
+
+    <div id="comandi">
+        <div id="leftbtn"></div>
+        <div id="rightbtn"></div>
+        <div id="firebtn"></div>
+        <div id="superbtn"></div>
+
+    </div>
+
+
+    <script>
+
+        //window.alert("PER MUOVERE: 'a', 'd', '←', '→'. PER SPARARE: spazio o '↑'");
+        //window.alert("Livello 3: Serviranno 7 colpi per vincere. Ricorda di ricaricarli!")
+
+        let boxT = document.getElementById("target")
+        let boxG = document.getElementById("gun")
+        let reload = document.getElementById("reload")
+        let vitaBar = document.getElementById("vita")
+        let barriera = document.getElementById("barrier")
+        let leftbtn = document.getElementById("leftbtn")
+        let rightbtn = document.getElementById("rightbtn")
+        let firebtn = document.getElementById("firebtn")
+        let superbtn = document.getElementById("superbtn")
+        let inc = 30
+        let posLeftT = 0
+        let posLeftG = window.innerWidth / 2 - 150
+        let dim = 200
+        let dimG = 300
+        let isRight = true
+        let reloadIsRight = false
+        let barrierIsRight = true
+        let posLeftR = (window.innerWidth * 3 / 4)
+        let vita = 7
+        let TBottom = window.innerHeight - boxT.getBoundingClientRect().bottom
+        let barrieraWidth = window.innerWidth / 4
+        let barrieraBottom = TBottom -30
+        let barrieraLeft = window.innerWidth / 2 - barrieraWidth / 2
+        let boxTInterval = window.setInterval(sposta, 100)
+        let proiettili = 5
+        let superP = false
+
+        let timer = 0;
+        let colpiSparati = 0
+        let superUtilizzate = 0
+        let timerInterval = window.setInterval(function () { timer++; }, 1000);
+
+        reload.style.left = posLeftR + "px"
+        barriera.width = barrieraWidth + "px"
+        barriera.style.left = barrieraLeft + "px"
+        barriera.style.bottom = barrieraBottom + "px"
+
+        boxG.style.left = posLeftG + "px"
+        boxT.style.left = posLeftT + "px"
+
+        /**********************/
+
+
+        if (!confirm("Vuoi usare i comandi a schermo?")) {
+            leftbtn.remove()
+            rightbtn.remove()
+            firebtn.remove()
+            superbtn.remove()
+        }
+        const keyMap = {
+            leftbtn: "ArrowLeft",
+            rightbtn: "ArrowRight",
+            firebtn: "ArrowUp",
+            superbtn: "e"
+        };
+
+        // Funzione per generare un evento keydown
+        function triggerKeyEvent(key) {
+            let event = new KeyboardEvent("keydown", {
+                key: key,
+                code: key,
+                bubbles: true
+            });
+            document.dispatchEvent(event); // Simula la pressione del tasto sulla tastiera
+        }
+
+        // Assegna il listener touch ai bottoni
+        [leftbtn, rightbtn, firebtn, superbtn].forEach(btn => {
+            btn.addEventListener("touchstart", (event) => {
+                let key = keyMap[event.target.id]; // Recupera il tasto associato
+                if (key) {
+                    triggerKeyEvent(key);
+                    console.log(`Simulato keydown: ${key}`);
+                }
+                event.preventDefault(); // Evita il doppio trigger con il click
+            });
+        });
+
+
+
+
+        /*************************/
+
+        function sposta() {
+
+
+
+            if (isRight && posLeftT + dim + inc < window.innerWidth) {
+
+                posLeftT += 30
+                if (posLeftT + dim + inc >= window.innerWidth) {
+                    isRight = false
+                }
+
+            }
+            else if (!isRight && posLeftT - inc > 0) {
+
+                isRight = false
+                posLeftT -= 30
+                if (posLeftT - inc <= 0) isRight = true
+
+            }
+
+            boxT.style.left = posLeftT + "px"
+        }
+
+
+        function spostarefill() {
+            if (reloadIsRight && posLeftR + 100 + 100 < window.innerWidth) {
+
+                posLeftR += 100
+                if (posLeftR + 100 + 100 >= window.innerWidth) {
+                    reloadIsRight = false
+                }
+
+            }
+            else if (!reloadIsRight && posLeftR - 100 > 0) {
+
+                reloadIsRight = false
+                posLeftR -= 100
+                if (posLeftR - 100 <= 0) reloadIsRight = true
+
+            }
+
+            reload.style.left = posLeftR + "px"
+        }
+
+        function spostaBarriera() {
+            if (barrierIsRight && barrieraLeft + barrieraWidth + 100 < window.innerWidth) {
+
+                barrieraLeft += 100
+                if (barrieraLeft + barrieraWidth + 100 >= window.innerWidth) {
+                    barrierIsRight = false
+                }
+
+            }
+            else if (!barrierIsRight && barrieraLeft - 100 > 0) {
+
+                barrierIsRight = false
+                barrieraLeft -= 100
+                if (barrieraLeft - 100 <= 0) barrierIsRight = true
+
+            }
+
+            barriera.style.left = barrieraLeft + "px"
+        }
+
+
+        window.setInterval(spostarefill, 1500)
+        window.setInterval(spostaBarriera, 150)
+
+        window.setInterval(function () {
+            if (vita < 7 && vita > 0) {
+
+                vita += 1
+                vitaBar.style.width = 12 * vita + "px"
+                vitaBar.textContent = vita + ""
+            }
+
+        }, 20000)
+
+
+
+        document.addEventListener("keydown", function () {
+            if ((event.key === "d" || event.key === "ArrowRight") && posLeftG + dimG + inc < window.innerWidth) {
+
+                posLeftG += 30
+
+
+
+            } if ((event.key === "a" || event.key === "ArrowLeft") && posLeftG - inc > 0) {
+                posLeftG -= 30
+
+            }
+
+
+
+            if (event.key === "e") {
+
+                if (proiettili >= 15) {
+                    superP = true
+                    superUtilizzate += 1
+                    reload.style.backgroundColor = "purple"
+                }
+            }
+
+            if (event.keyCode === 32 || event.key === "ArrowUp") { //Spacebar
+
+                let posBottom = 204
+                let posLeftP = posLeftG + 145
+
+
+
+                var proiettile = document.createElement('div');
+                proiettile.className = "proj"
+
+                proiettile.style.left = posLeftP + "px"
+
+                proiettile.style.bottom = posBottom + "px"
+                document.body.appendChild(proiettile);
+
+                if (proiettili <= 0) {
+
+                    boxG.style.backgroundImage = "url(\"https://png.pngtree.com/png-clipart/20230917/original/pngtree-flame-burning-sparks-splash-broken-bomb-explosion-realistic-photography-decorative-pattern-png-image_12297991.png\")"
+                    clearInterval(timerInterval)
+
+                    setTimeout(function () {
+                        window.alert("GAME OVER...\nTempo totale: " + timer + "s\nColpi sparati: " + colpiSparati + "\nSuper usate: " + superUtilizzate)
+                        window.location.reload();
+                    }, 500)
+
+                    proiettile.remove();
+
+                } else if (superP) proiettili = parseInt(proiettili / 3, 10)
+                else proiettili--
+
+                colpiSparati += 1
+
+
+
+                if (superP) {
+                    proiettile.style.height = 50 + "px"
+                    proiettile.style.backgroundColor = "gold"
+                }
+
+                let proiettileInterval = window.setInterval(function () {
+                    if (posBottom + 10 < window.innerHeight) {
+                        posBottom += 10
+                    } else {
+                        proiettile.remove()
+                        clearInterval(proiettileInterval)
+                    }
+
+                    let TBottom = window.innerHeight - boxT.getBoundingClientRect().bottom
+                    let reloadBottom = window.innerHeight - reload.getBoundingClientRect().bottom;
+
+                    if (posBottom >= barrieraBottom && posLeftP >= barrieraLeft && posLeftP <= barrieraLeft + barrieraWidth) {
+                        if (!superP) {
+                            proiettile.remove()
+                            clearInterval(proiettileInterval);
+                        }
+                    }
+
+                    if (posBottom >= TBottom && posLeftP >= posLeftT - 15 && posLeftP <= posLeftT + 200 && posBottom <= TBottom + 10) {//DIFF 1
+
+                        if (vita <= 1) {
+                            proiettile.style.backgroundColor = "red"
+                            vitaBar.remove();
+                            boxT.style.backgroundImage = "url(\"https://png.pngtree.com/png-clipart/20230917/original/pngtree-flame-burning-sparks-splash-broken-bomb-explosion-realistic-photography-decorative-pattern-png-image_12297991.png\")"
+                            boxT.style.backgroundPositionY = "0px";
+                            proiettile.remove()
+
+
+                            clearInterval(boxTInterval);
+                            clearInterval(proiettileInterval);
+                            document.documentElement.style.backgroundImage = "url(\"https://t4.ftcdn.net/jpg/11/45/93/75/360_F_1145937547_ZH6SvZGKQo5J5CSIZP4iIhNaKbBT1jWo.jpg\")"
+                            document.documentElement.style.backgroundSize = "110%"
+                            document.documentElement.style.backgroundRepeat = "repeat"
+
+
+                            setTimeout(function () {
+                                window.alert("COMPLIMENTI, HAI VINTO!\nTempo totale: " + timer + "s\nColpi sparati: " + colpiSparati + "\nSuper usate: " + superUtilizzate)
+
+                                window.location.reload();
+                            }, 500)
+
+                        } else {
+
+                            if (superP) {
+                                vita -= 2
+                            }
+                            else vita--
+
+                            superP = false
+
+                            proiettile.remove()
+                            clearInterval(proiettileInterval);
+
+
+                            vitaBar.style.width = 12 * vita + "px"
+                            vitaBar.textContent = vita + ""
+                        }
+
+                    } if (posBottom > TBottom + 10) {
+                        proiettile.style.backgroundColor = "aliceblue"
+
+                        superP = false
+
+
+
+
+                    }
+
+                    if (posBottom >= reloadBottom && posLeftP >= posLeftR - 15 && posLeftP <= posLeftR + 100) {
+                        proiettile.remove()
+                        clearInterval(proiettileInterval);
+
+                        proiettili += 5
+
+                        superP = false
+
+                    }
+
+
+
+
+                    proiettile.style.bottom = posBottom + "px"
+                    reload.textContent = proiettili + ""
+
+                    if (proiettili <= 1) reload.style.backgroundColor = "red"
+                    else if (proiettili >= 15) reload.style.backgroundColor = "blue"
+                    else reload.style.backgroundColor = "green"
+
+
+
+
+
+
+
+
+                }, 10)
+
+            }
+
+            boxG.style.left = posLeftG + "px"
+        }
+
+        )
+
+
+
+    </script>
+</body>
+
+</html>
